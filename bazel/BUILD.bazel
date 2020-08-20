@@ -1,0 +1,240 @@
+load("@bazel_skylib//lib:selects.bzl", "selects")
+
+package(default_visibility = ['//visibility:public'])
+
+config_setting(
+    name = "linux",
+    constraint_values = [
+        "@platforms//os:linux",
+    ],
+)
+
+config_setting(
+    name = "osx",
+    constraint_values = [
+        "@platforms//os:osx",
+    ],
+)
+
+config_setting(
+    name = "windows",
+    constraint_values = [
+        "@platforms//os:windows",
+    ],
+)
+
+config_setting(
+    name = "asmjs",
+    constraint_values = [
+        "@tab_toolchains//bazel/platforms:asmjs",
+    ],
+)
+
+config_setting(
+    name = "fastbuild",
+    values = {
+        "compilation_mode": "fastbuild",
+    },
+)
+
+config_setting(
+    name = "dbg",
+    values = {
+        "compilation_mode": "dbg",
+    },
+)
+
+config_setting(
+    name = "opt",
+    values = {
+        "compilation_mode": "opt",
+    },
+)
+
+selects.config_setting_group(
+    name = "debug_build",
+    match_any = [
+        ":dbg",
+    ],
+)
+
+selects.config_setting_group(
+    name = "release_build",
+    match_any = [
+        ":fastbuild",
+        ":opt",
+    ],
+)
+
+config_setting(
+    name = "x86_32",
+    constraint_values = [
+        "@platforms//cpu:x86_32",
+    ],
+)
+
+config_setting(
+    name = "x86_64",
+    constraint_values = [
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_32",
+    match_all = [
+        ":windows",
+        ":x86_32",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_64",
+    match_all = [
+        ":windows",
+        ":x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_fastbuild",
+    match_all = [
+        ":windows",
+        ":fastbuild",
+    ],
+)
+
+# ***
+
+selects.config_setting_group(
+    name = "windows_release",
+    match_all = [
+        ":windows",
+        ":release_build",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_debug",
+    match_all = [
+        ":windows",
+        ":debug_build",
+    ],
+)
+
+# ***
+
+selects.config_setting_group(
+    name = "windows_release_x64",
+    match_all = [
+        ":windows",
+        ":release_build",
+        ":x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_debug_x64",
+    match_all = [
+        ":windows",
+        ":debug_build",
+        ":x86_64",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_release_x86",
+    match_all = [
+        ":windows",
+        ":release_build",
+        ":x86_32",
+    ],
+)
+
+selects.config_setting_group(
+    name = "windows_debug_x86",
+    match_all = [
+        ":windows",
+        ":debug_build",
+        ":x86_32",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_debug",
+    match_all = [
+        ":linux",
+        ":dbg",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_release",
+    match_all = [
+        ":linux",
+        ":release_build",
+    ],
+)
+
+selects.config_setting_group(
+    name = "osx_debug",
+    match_all = [
+        ":osx",
+        ":dbg",
+    ],
+)
+
+selects.config_setting_group(
+    name = "osx_release",
+    match_all = [
+        ":osx",
+        ":release_build",
+    ],
+)
+# ******************* HOST *********************
+config_setting(
+    name = "host_windows_64",
+    values = {"host_cpu": "x64_windows"},
+)
+
+config_setting(
+    name = "host_windows_32",
+    values = {"host_cpu": "x86_windows"},
+)
+
+selects.config_setting_group(
+    name = "host_windows",
+    match_any = [
+        ":host_windows_32",
+        ":host_windows_64",
+    ],
+)
+
+config_setting(
+    name = "host_linux",
+    values = {"host_cpu": "k8"},
+)
+
+config_setting(
+    name = "host_osx",
+    values = {"host_cpu": "darwin"},
+)
+
+# ******************* END OF HOST *********************
+
+selects.config_setting_group(
+    name = "windows_js",
+    match_all = [
+        ":host_windows",
+        ":asmjs",
+    ],
+)
+
+selects.config_setting_group(
+    name = "linux_js",
+    match_all = [
+        ":host_linux",
+        ":asmjs",
+    ],
+)
+ 
